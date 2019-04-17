@@ -1,12 +1,12 @@
-#include<iostream>
-#include<stdio.h>
-#include<iomanip>
-#include<cmath>
-#include<fstream>
-#include<ctime>
-#include<random>
-#include<algorithm>
-#include<vector>
+#include <iostream>
+#include <stdio.h>
+#include <iomanip>
+#include <cmath>
+#include <fstream>
+#include <ctime>
+#include <random>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 int main(int argc, char* argv[])
