@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 
     double avgpresentvalue=exp(-r*T)*(-K1*normalCDF(var1)+K2*normalCDF(var2)+K3*(K2-K1)/(K4-K3)*normalCDF(var3)\
            -((K2-K1)+K3*(K2-K1)/(K4-K3))*normalCDF(var4)+S*exp(r*T-q*T)*(normalCDF(var5)-normalCDF(var6)\
-           -normalCDF(var7)+normalCDF(var8)));
+           -(K2-K1)/(K4-K3)*normalCDF(var7)+(K2-K1)/(K4-K3)*normalCDF(var8)));
 
 
     cout<<"Value:"<<setw(5)<<fixed<<setprecision(5)<<avgpresentvalue<<endl;
