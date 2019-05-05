@@ -6,6 +6,7 @@
 #include<ctime>
 #include<random>
 #include<algorithm>
+#include<vector>
 using namespace std;
 double normalCDF(double x) // Phi(-∞, x) aka N(x)
 {
@@ -17,6 +18,33 @@ double binom(int n, int k)
 
     for (int i = 0; i < k; i++)
         value = (value * (n - i)) / (i + 1);
+    return value;
+}
+double binomial(int n, int j, double p)
+{
+    double value = 1;
+    int pcount=n-j;
+    int qcount=j;
+
+    for (int i = 0; i < j; i++){
+        value = (value * (n - i)) / (i + 1);
+        while(value>1 && pcount>0){
+            value*=p;
+            pcount=pcount-1;
+        }
+        while(value>1 && qcount>0){
+            value=value*(1-p);
+            qcount=qcount-1;
+        }
+    }
+    while(pcount>0){
+            value*=p;
+            pcount=pcount-1;
+        }
+    while(qcount>0){
+        value=value*(1-p);
+        qcount=qcount-1;
+    }
     return value;
 }
 int main(int argc, char* argv[])
@@ -137,14 +165,20 @@ int main(int argc, char* argv[])
     double u=exp(sigma*sqrt(T/n));
     double d=1/u;
     double p=(exp(r*T/n-q*T/n)-d)/(u-d);
-    double sprice[n+1][n+1];
+    vector<double> zeroo(n+1,0);
+    vector<vector<double> > sprice,cprice_amer_call,cprice_euro_call,cprice_amer_put,cprice_euro_put;
+    for(int i=0;i<n+1;i++){
+        sprice.push_back(zeroo);
+        cprice_amer_call.push_back(zeroo);
+        cprice_euro_call.push_back(zeroo);
+        cprice_amer_put.push_back(zeroo);
+        cprice_euro_put.push_back(zeroo);
+    }
     for(int i=0;i<=n;i++){
         for(int j=0;j<=i;j++){
             sprice[i][j]=S*pow(u,i-j)*pow(d,j);
         }
     }
-    double cprice_amer_call[n][n],cprice_euro_call[n][n];
-    double cprice_amer_put[n][n],cprice_euro_put[n][n];
     for(int i=0;i<n;i++){
         cprice_euro_call[n-1][i]=exp(-r*T/n)*(p*max(sprice[n][i]-K,0.0)+(1-p)*max(sprice[n][i+1]-K,0.0));
         cprice_euro_put[n-1][i]=exp(-r*T/n)*(p*max(K-sprice[n][i],0.0)+(1-p)*max(K-sprice[n][i+1],0.0));
@@ -166,8 +200,8 @@ int main(int argc, char* argv[])
 
     //Bonus 1
     cout<<"\nBonus 1:\n";
-    double cprice_euro_call_one[n+1],cprice_euro_put_one[n+1];
-    double cprice_amer_call_one[n+1],cprice_amer_put_one[n+1];
+    vector<double> cprice_euro_call_one(n+1,0),cprice_euro_put_one(n+1,0);
+    vector<double> cprice_amer_call_one(n+1,0),cprice_amer_put_one(n+1,0);
     for(int i=0;i<=n;i++){
         cprice_euro_call_one[i]=max(S*pow(u,n-i)*pow(d,i)-K,0.0);
         cprice_euro_put_one[i]=max(K-S*pow(u,n-i)*pow(d,i),0.0);
@@ -191,8 +225,10 @@ int main(int argc, char* argv[])
     cout<<"\nBonus 2:\n";
     double cprice_euro_call_two=0,cprice_euro_put_two=0;;
     for(int j=0;j<=n;j++){
-        cprice_euro_call_two+=binom(n,j)*pow(p,n-j)*pow((1-p),j)*max(S*pow(u,n-j)*pow(d,j)-K,0.0);
-        cprice_euro_put_two+=binom(n,j)*pow(p,n-j)*pow((1-p),j)*max(K-S*pow(u,n-j)*pow(d,j),0.0);
+        //cprice_euro_call_two+=binom(n,j)*pow(p,n-j)*pow((1-p),j)*max(S*pow(u,n-j)*pow(d,j)-K,0.0);
+        //cprice_euro_put_two+=binom(n,j)*pow(p,n-j)*pow((1-p),j)*max(K-S*pow(u,n-j)*pow(d,j),0.0);
+        cprice_euro_call_two+=binomial(n,j,p)*max(S*pow(u,n-j)*pow(d,j)-K,0.0);
+        cprice_euro_put_two+=binomial(n,j,p)*max(K-S*pow(u,n-j)*pow(d,j),0.0);
     }
     cout<<"Euro Call: "<<cprice_euro_call_two*exp(-r*T)<<'\n';
     cout<<"Euro Put : "<<cprice_euro_put_two*exp(-r*T)<<'\n';

@@ -19,6 +19,33 @@ double binom(int n, int k)
         value = (value * (n - i)) / (i + 1);
     return value;
 }
+double binomial(int n, int j, double p)
+{
+    double value = 1;
+    int pcount=n-j;
+    int qcount=j;
+
+    for (int i = 0; i < j; i++){
+        value = (value * (n - i)) / (i + 1);
+        while(value>1 && pcount>0){
+            value*=p;
+            pcount=pcount-1;
+        }
+        while(value>1 && qcount>0){
+            value=value*(1-p);
+            qcount=qcount-1;
+        }
+    }
+    while(pcount>0){
+            value*=p;
+            pcount=pcount-1;
+        }
+    while(qcount>0){
+        value=value*(1-p);
+        qcount=qcount-1;
+    }
+    return value;
+}
 int main(int argc, char* argv[])
 {
 	ifstream input1;
@@ -191,8 +218,10 @@ int main(int argc, char* argv[])
     cout<<"\nBonus 2:\n";
     double cprice_euro_call_two=0,cprice_euro_put_two=0;;
     for(int j=0;j<=n;j++){
-        cprice_euro_call_two+=binom(n,j)*pow(p,n-j)*pow((1-p),j)*max(S*pow(u,n-j)*pow(d,j)-K,0.0);
-        cprice_euro_put_two+=binom(n,j)*pow(p,n-j)*pow((1-p),j)*max(K-S*pow(u,n-j)*pow(d,j),0.0);
+        //cprice_euro_call_two+=binom(n,j)*pow(p,n-j)*pow((1-p),j)*max(S*pow(u,n-j)*pow(d,j)-K,0.0);
+        //cprice_euro_put_two+=binom(n,j)*pow(p,n-j)*pow((1-p),j)*max(K-S*pow(u,n-j)*pow(d,j),0.0);
+        cprice_euro_call_two+=binomial(n,j,p)*max(S*pow(u,n-j)*pow(d,j)-K,0.0);
+        cprice_euro_put_two+=binomial(n,j,p)*max(K-S*pow(u,n-j)*pow(d,j),0.0);
     }
     cout<<"Euro Call: "<<cprice_euro_call_two*exp(-r*T)<<'\n';
     cout<<"Euro Put : "<<cprice_euro_put_two*exp(-r*T)<<'\n';

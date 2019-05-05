@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     }
 
     double avgpresentvalue=value/nrolls*exp(-r*T);
-    cout<<"Value:"<<setw(5)<<fixed<<setprecision(3)<<avgpresentvalue<<endl;
+    cout<<"Value:"<<setw(5)<<fixed<<setprecision(4)<<avgpresentvalue<<endl;
     
     vector <double> data;
     double total=0;
