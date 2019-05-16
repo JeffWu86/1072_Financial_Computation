@@ -140,7 +140,7 @@ double rainbow(int nrolls, int n, double K, double r, double T, vector<double> &
                 }
             }
         
-            hstar[j][j]=standardDeviation;
+            hstar[j][j]=standardDeviation*standardDeviation;
             
         }
     }
@@ -195,9 +195,9 @@ double rainbow(int nrolls, int n, double K, double r, double T, vector<double> &
         //     }
         //     cout<<endl;
         // }
-        for(int i=0;i<A.size();i++)
-            for(int j=0;j<A[0].size();j++)
-                A[i][j]=temp3[i][j];
+        // for(int i=0;i<A.size();i++)
+        //     for(int j=0;j<A[0].size();j++)
+        //         A[i][j]=temp3[i][j];
 
         // cout<<"A become:\n";
         // for(int i=0;i<n;i++){
@@ -206,6 +206,36 @@ double rainbow(int nrolls, int n, double K, double r, double T, vector<double> &
         //     }
         //     cout<<endl;
         // }cout<<endl;
+        // vector<vector<double> > rmat;
+        // for(int i=0;i<nrolls;i++){
+        //     vector<double> rtemp;
+        //     for(int j=0;j<n;j++){
+        //         double temp2=0;
+        //         for(int k=0;k<n;k++){
+        //             temp2+=zmat[i][k]*invAstar[k][j];
+        //         }
+        //         rtemp.push_back(temp2);
+        //     }
+        //     rmat.push_back(rtemp);
+        // }
+        // for(int i=0;i<n-1;i++){
+        //     for(int j=i+1;j<n;j++){
+        //         double sum=0;
+        //         for(int k=0;k<nrolls;k++){
+        //             sum+=rmat[k][i]*rmat[k][j];
+        //         }
+        //         sum/=nrolls;
+        //         hstar[i][j]=sum;
+        //         hstar[j][i]=sum;
+        //     }
+        // }
+        // cout<<"hstar\n";
+        // for(int i=0;i<n;i++){
+        //     for(int j=0;j<n;j++){
+        //         cout<<setw(12)<<hstar[i][j];
+        //     }
+        //     cout<<endl;
+        // }
     }
 
     
@@ -215,7 +245,10 @@ double rainbow(int nrolls, int n, double K, double r, double T, vector<double> &
         for(int j=0;j<n;j++){
             double temp2=0;
             for(int k=0;k<n;k++){
-                temp2+=zmat[i][k]*A[k][j];
+                if(cases!=3)
+                    temp2+=zmat[i][k]*A[k][j];
+                else
+                    temp2+=zmat[i][k]*temp3[k][j];
             }
             rtemp.push_back(temp2);
         }
