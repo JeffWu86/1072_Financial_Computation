@@ -1,0 +1,6 @@
+
+[St,r,q,sigma,t,T,Smax_t,n,nrolls,num_of_rep]=readdata('input_1.txt');
+
+zmat1=randn(nrolls,n);
+zmat2(1:nrolls,1:n)=nan;
+
