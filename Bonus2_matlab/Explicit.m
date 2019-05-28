@@ -1,5 +1,5 @@
-function [Implicit_Price] = Implicit(S0,K,r,q,sigma,T,Smin,Smax,m,n,optType)
-    %IMPLICIT Summary of this function goes here
+function [Explicit_Price] = Explicit(S0,K,r,q,sigma,T,Smin,Smax,m,n,optType)
+    %EXLICIT Summary of this function goes here
     %   Detailed explanation goes here
     tic;
     
@@ -26,39 +26,28 @@ function [Implicit_Price] = Implicit(S0,K,r,q,sigma,T,Smin,Smax,m,n,optType)
 
     % coef of aj, bj, cj
     j=1:m-1;
-    aj=(r-q)/2*j*dT-0.5*power(sigma*j,2)*dT;
-    bj=1+power(sigma*j,2)*dT+r*dT;
-    cj=-(r-q)/2*j*dT-0.5*power(sigma*j,2)*dT;
-    
+    aj=(-(r-q)/2*j*dT+0.5*power(sigma*j,2)*dT)/(1+r*dT);
+    bj=(1-power(sigma*j,2)*dT)/(1+r*dT);
+    cj=((r-q)/2*j*dT+0.5*power(sigma*j,2)*dT)/(1+r*dT);
+
     % A matrix
-    impmat=zeros(m-1,m-1);
+    expmat=zeros(m-1,m+1);
     for i=1:m-1
-        impmat(i,i)=bj(1,m-i);
-        if(i~=1)
-            impmat(i,i-1)=cj(1,m-i);
-        end
-        if(i~=m-1)
-            impmat(i,i+1)=aj(1,m-i);
-        end
+        expmat(i,i)=cj(1,m-i);
+        expmat(i,i+1)=bj(1,m-i);
+        expmat(i,i+2)=aj(1,m-i);
     end
 
-    [L,U] = lu(impmat);
     for idx=n:-1:1
-        b=price(2:m,idx+1);
-        b(end)=b(end)-aj(1)*price(m+1,idx); %Alwayw zero
-        b(1)=b(1)-cj(end)*price(1,idx);
-        %x=impmat\b;
-        x=U\(L\b);
-        for j=1:m-1
-            if(x(j,1)<0) 
-                x(j,1)=0;
+        price(2:m,idx)=expmat*price(:,idx+1);
+        for idy=2:m
+            if(price(idy,idx)<0)
+                price(idy,idx)=0;
             end
         end
-        price(2:m,idx)=x;
     end
     pre_t=toc;
     %fprintf('Compute %f (s)\n',pre_t);
 
-    Implicit_Price=interp1(Smax:-dS:Smin,price(:,1),S0);
+    Explicit_Price=interp1(Smax:-dS:Smin,price(:,1),S0);
 end
-

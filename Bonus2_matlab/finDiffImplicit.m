@@ -70,7 +70,7 @@ B = diag(aj(3:M),-1) + diag(bj(2:M)) + diag(cj(2:M-1),1);
 offset = zeros(size(B,2),1);
 for idx = N:-1:1
     offset(1) = aj(2)*price(1,idx);
-    % offset(end) = c(end)*price(end,idx); % This will always be zero
+    offset(end) = cj(end)*price(end,idx); % This will always be zero
     price(2:M,idx) = U\(L\(price(2:M,idx+1) - offset));
 end
 
