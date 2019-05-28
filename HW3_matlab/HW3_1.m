@@ -1,5 +1,5 @@
 
-[K,r,T,nrolls,repeat_times,n,S,q,sigma,rho,covmat]=readdata('input_1.txt');
+[K,r,T,nrolls,repeat_times,n,S,q,sigma,rho,covmat]=readdata('input_7.txt');
 %chol(covmat)
 [A]=choles(covmat,n);
 

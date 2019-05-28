@@ -1,21 +1,24 @@
-function [Implicit_Price] = Implicit(S0,K,r,q,sigma,T,Smin,Smax,m,n,optType)
+function [Implicit_Price] = Implicit(S0,K,r,q,sigma,T,Smin,Smax,m,n,optType,AMER)
     %IMPLICIT Summary of this function goes here
     %   Detailed explanation goes here
-    tic;
+    if(nargin==11)
+        AMER=false;
+    end
+    %tic;
     
     dS=(Smax-Smin)/m;
     dT=T/n;
     %Boundary condition for price
     price(1:m+1,1:n+1)=nan;
     switch optType
-        case 'EURO_CALL'
+        case 'CALL'
             price(1,:)=m*dS-K;
             price(end,:)=max(Smin-K,0);
             %Stock price in time T
             for i=1:m+1
                 price(i,n+1)=max((m-i+1)*dS-K,0);
             end
-        case 'EURO_PUT'
+        case 'PUT'
             price(1,:)=max(K-m*dS,0);
             price(end,:)=K-Smin;
             %Stock price in time T
@@ -55,8 +58,13 @@ function [Implicit_Price] = Implicit(S0,K,r,q,sigma,T,Smin,Smax,m,n,optType)
             end
         end
         price(2:m,idx)=x;
+        for idy=2:m
+            if(AMER)
+                price(idy,idx)=max(price(idy,idx),price(idy,n+1));
+            end
+        end
     end
-    pre_t=toc;
+    %pre_t=toc;
     %fprintf('Compute %f (s)\n',pre_t);
 
     Implicit_Price=interp1(Smax:-dS:Smin,price(:,1),S0);
