@@ -5,9 +5,10 @@ clear
 % Binomial
 bino_euro=Binomial(St,r,q,sigma,t,T,n,'EURo');
 bino_amer=Binomial(St,r,q,sigma,t,T,n,'AMER');
-fprintf('Basic requirement(i):\n');
-fprintf('Binomial euro lookback options : %f\n',bino_euro);
-fprintf('Binomial amer lookback options : %f\n',bino_amer);
+fprintf('Basic requirement(i):\n',std(monte_euro));
+fprintf('Under %d times of testing, 95%% of confidence interval for the call option value are: \n',num_of_rep);
+fprintf('Lower bounds: %f\n',mean(monte_euro)-2*std(monte_euro));
+fprintf('Mean          %f\n',mean(monte_euro));
 
 % Monte Carlo
 monte_euro(1:num_of_rep)=nan;
@@ -15,7 +16,7 @@ for i=1:num_of_rep
     monte_euro(i)=MonteCarlo(St,r,q,sigma,t,T,Smax_t,n,nrolls);
 end
 
-fprintf('\nBasic requirement(ii): \nStandard Deviation: %f\n',std(monte_euro));
+fprintf('Basic requirement(ii): \nStandard Deviation: %f\n',std(monte_euro));
 fprintf('Under %d times of testing, 95%% of confidence interval for the call option value are: \n',num_of_rep);
 fprintf('Lower bounds: %f\n',mean(monte_euro)-2*std(monte_euro));
 fprintf('Mean          %f\n',mean(monte_euro));
