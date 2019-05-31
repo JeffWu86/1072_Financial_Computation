@@ -1,4 +1,4 @@
-function [euro_price,amer_price] = Binomial(St,r,q,sigma,t,T,n)
+function [euro_price,amer_price,c] = Binomial(St,r,q,sigma,t,T,n)
     %BINOMIAL Summary of this function goes here
     %   Detailed explanation goes here
 
@@ -58,6 +58,7 @@ function [euro_price,amer_price] = Binomial(St,r,q,sigma,t,T,n)
         for k=1:2*n+1
             if(tree(j,n+1).Smax(k).bool==true)
                 tree(j,n+1).Smax(k).eurovalue=max(tree(j,n+1).Smax(k).price-tree(j,n+1).Price,0.0);
+                tree(j,n+1).Smax(k).amervalue=tree(j,n+1).Smax(k).eurovalue;
             end
         end
     end
@@ -70,11 +71,15 @@ function [euro_price,amer_price] = Binomial(St,r,q,sigma,t,T,n)
                     if(tree(j,i).Smax(k).price>tree(j,i).Price)
                         tree(j,i).Smax(k).eurovalue=(p*tree(j-1,i+1).Smax(k).eurovalue+...
                             (1-p)*tree(j+1,i+1).Smax(k).eurovalue)*exp(-r*dT);
+                        tree(j,i).Smax(k).amervalue=(p*tree(j-1,i+1).Smax(k).amervalue+...
+                            (1-p)*tree(j+1,i+1).Smax(k).amervalue)*exp(-r*dT);
                     else
                         tree(j,i).Smax(k).eurovalue=(p*tree(j-1,i+1).Smax(k-1).eurovalue+...
                             (1-p)*tree(j+1,i+1).Smax(k).eurovalue)*exp(-r*dT);
+                        tree(j,i).Smax(k).amervalue=(p*tree(j-1,i+1).Smax(k-1).amervalue+...
+                            (1-p)*tree(j+1,i+1).Smax(k).amervalue)*exp(-r*dT);
                     end
-                    tree(j,i).Smax(k).amervalue=max(tree(j,i).Smax(k).eurovalue,...
+                    tree(j,i).Smax(k).amervalue=max(tree(j,i).Smax(k).amervalue,...
                         tree(j,i).Smax(k).price-tree(j,i).Price);
                 end
             end
@@ -83,5 +88,6 @@ function [euro_price,amer_price] = Binomial(St,r,q,sigma,t,T,n)
 
     euro_price=tree(n+1,1).Smax(n+1).eurovalue;
     amer_price=tree(n+1,1).Smax(n+1).amervalue;
+    c=tree;
 end
 
