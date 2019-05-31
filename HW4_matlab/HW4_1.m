@@ -3,8 +3,7 @@ clear
 
 % Basic 
 % Binomial
-bino_euro=Binomial(St,r,q,sigma,t,T,n,'EURo');
-bino_amer=Binomial(St,r,q,sigma,t,T,n,'AMER');
+[bino_euro,bino_amer]=Binomial(St,r,q,sigma,t,T,n);
 fprintf('Basic requirement(i):\n');
 fprintf('Binomial euro lookback options : %f\n',bino_euro);
 fprintf('Binomial amer lookback options : %f\n',bino_amer);
