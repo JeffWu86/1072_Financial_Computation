@@ -6,10 +6,21 @@ clear
 
 % Basic 
 % Binomial
+tic;
 [bino_euro,bino_amer,tree]=Binomial(St,r,q,sigma,t,T,Smax_t,n);
 fprintf('Basic requirement(i):\n');
 fprintf('Binomial euro lookback options : %f\n',bino_euro);
 fprintf('Binomial amer lookback options : %f\n',bino_amer);
+tt=toc;
+fprintf('Time %f(s)\n',tt);
+
+tic;
+[bino_euro,bino_amer,tree]=Binomial_bonus(St,r,q,sigma,t,T,Smax_t,n);
+fprintf('Basic requirement(i):\n');
+fprintf('Binomial euro lookback options : %f\n',bino_euro);
+fprintf('Binomial amer lookback options : %f\n',bino_amer);
+tt=toc;
+fprintf('Time %f(s)\n',tt);
 
 % Monte Carlo
 monte_euro(1:num_of_rep)=nan;

@@ -1,5 +1,5 @@
-function [euro_price,amer_price,c,d] = Binomial1(St,r,q,sigma,t,T,Smax_t,n)
-    %BINOMIAL1 Summary of this function goes here
+function [euro_price,amer_price,c,d] = Binomial_bonus(St,r,q,sigma,t,T,Smax_t,n)
+    %BINOMIAL_BONUS Summary of this function goes here
     %   Detailed explanation goes here
 
     % Binomial
@@ -111,8 +111,6 @@ function [euro_price,amer_price,c,d] = Binomial1(St,r,q,sigma,t,T,Smax_t,n)
         amer_price=tree(n+1,1).Smax(n+1).amervalue;
     else
         euro_price=tree(n+1,1).Smax(level).eurovalue;
-%         euro_price=0;
-%         amer_price=0;
         amer_price=tree(n+1,1).Smax(level).amervalue;
     end
     
