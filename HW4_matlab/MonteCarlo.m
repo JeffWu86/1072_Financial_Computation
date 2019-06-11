@@ -23,6 +23,6 @@ function [price] = MonteCarlo(St,r,q,sigma,t,T,Smax_t,n,nrolls)
 %         out(i)=max(price(i,n+1)-Smax_t,0);
 %     end
 %     mean(zmat1(:,n+1))
-    price=mean(out)*exp(-r*T);
+    price=mean(out)*exp(-r*dT);
 end
 

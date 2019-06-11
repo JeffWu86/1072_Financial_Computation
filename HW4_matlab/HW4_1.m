@@ -1,21 +1,10 @@
 clear
 [St,r,q,sigma,t,T,Smax_t,n,nrolls,num_of_rep]=readdata('input_2.txt');
-%[bino_euro,bino_amer,tree,pricelist]=Binomial1(St,r,q,sigma,t,T,Smax_t,n);
-
-
 
 % Basic 
 % Binomial
 tic;
 [bino_euro,bino_amer,tree]=Binomial(St,r,q,sigma,t,T,Smax_t,n);
-fprintf('Basic requirement(i):\n');
-fprintf('Binomial euro lookback options : %f\n',bino_euro);
-fprintf('Binomial amer lookback options : %f\n',bino_amer);
-tt=toc;
-fprintf('Time %f(s)\n',tt);
-
-tic;
-[bino_euro,bino_amer,tree]=Binomial_bonus(St,r,q,sigma,t,T,Smax_t,n);
 fprintf('Basic requirement(i):\n');
 fprintf('Binomial euro lookback options : %f\n',bino_euro);
 fprintf('Binomial amer lookback options : %f\n',bino_amer);

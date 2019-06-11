@@ -2,7 +2,7 @@ function [price] = Binomial_Cheuck(St,r,q,sigma,t,T,n,optType)
 %BINOMIAL_CHEUK Summary of this function goes here
 %   Detailed explanation goes here
     dT=(T-t)/n;
-    u=exp(sigma*sqrt(T/n));
+    u=exp(sigma*sqrt(dT));
     d=1/u;
     mu=exp(r*dT-q*dT);
     pu=(mu*u-1)/(mu*(u-d));
