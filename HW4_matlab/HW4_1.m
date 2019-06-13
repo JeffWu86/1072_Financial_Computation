@@ -1,5 +1,5 @@
 clear
-[St,r,q,sigma,t,T,Smax_t,n,nrolls,num_of_rep]=readdata('input_2.txt');
+[St,r,q,sigma,t,T,Smax_t,n,nrolls,num_of_rep]=readdata('input_4.txt');
 
 % Basic 
 % Binomial
