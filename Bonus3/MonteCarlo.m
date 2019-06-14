@@ -1,8 +1,8 @@
 function [price,pp] = MonteCarlo(St,r,q,sigma,t,T,Smax_t,n,nrolls)
 %MONTECARLO Summary of this function goes here
 %   Detailed explanation goes here
-    price(1:10000,1:n+1)=nan;
-    price(1:10000,1)=St;
+    price(1:nrolls,1:n+1)=nan;
+    price(1:nrolls,1)=St;
 
     dT=(T-t)/n;
     
@@ -14,7 +14,7 @@ function [price,pp] = MonteCarlo(St,r,q,sigma,t,T,Smax_t,n,nrolls)
         end
     end
     pp=pric
-    out(1:10000)=nan;
+    out(1:nrolls)=nan;
     for i=1:nrolls
         max(price(i,:))
         out(i)=max(max(max(price(i,:)),Smax_t) - price(i,n+1), 0);

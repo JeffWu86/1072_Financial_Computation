@@ -13,10 +13,9 @@ function [price,pp] = MonteCarlo(St,r,q,sigma,t,T,Smax_t,n,nrolls)
             price(j,i+1)=exp(sigma1*randn()+mu);
         end
     end
-    pp=pric
+
     out(1:nrolls)=nan;
     for i=1:nrolls
-        max(price(i,:))
         out(i)=max(max(max(price(i,:)),Smax_t) - price(i,n+1), 0);
     end
 %     This is for call with K=Smax_t (Check)    
@@ -24,6 +23,6 @@ function [price,pp] = MonteCarlo(St,r,q,sigma,t,T,Smax_t,n,nrolls)
 %         out(i)=max(price(i,n+1)-Smax_t,0);
 %     end
 %     mean(zmat1(:,n+1))
-    price=mean(out)*exp(-r*dT);
+    price=mean(out)*exp(-r*(T-t));
 end
 

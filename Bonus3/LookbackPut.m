@@ -1,10 +1,10 @@
-function [output] = Plain_Vanilla(S0,K,r,q,sigma,T,n,nrolls)
-%PLAIN_VALLINA Summary of this function goes here
+function [output,pay] = LookbackPut(St,r,q,sigma,t,T,n,Smax_t,nrolls)
+%LOOKBACKPUT Summary of this function goes here
 %   Detailed explanation goes here
     price(1:nrolls,1:n+1)=nan;
-    price(1:nrolls,1)=S0;
+    price(1:nrolls,1)=St;
 
-    dT=T/n;
+    dT=(T-t)/n;
     for i=1:n
         for j=1:nrolls
             mu=log(price(j,i))+(r-q-sigma*sigma/2)*dT;
@@ -14,9 +14,14 @@ function [output] = Plain_Vanilla(S0,K,r,q,sigma,T,n,nrolls)
     end
     
     payoff=nan(nrolls,n);
-    payoff(:,n)=max(K-price(:,n+1),0);
+    for j=1:nrolls
+        payoff(j,n)=max(max(max(price(j,:)),Smax_t) - price(j,n+1), 0);
+    end
     for i=n:-1:2
-        exervalue=max(K-price(:,i),0);
+        exervalue=nan(nrolls,1);
+        for j=1:nrolls
+            exervalue(j,1)=max(max(max(price(j,1:i)),Smax_t) - price(j,i), 0);
+        end
 
         % Compute how many EV not equal to zero
         count=0;
@@ -31,7 +36,7 @@ function [output] = Plain_Vanilla(S0,K,r,q,sigma,T,n,nrolls)
             counter=1;
             for j=1:nrolls
                 if(exervalue(j)~=0)
-                    holdingvalue(counter,1)=payoff(j,i)*exp(-r*T/n);
+                    holdingvalue(counter,1)=payoff(j,i)*exp(-r*dT);
                     holdingvalue(counter,2)=price(j,i);
                     holdingvalue(counter,3)=power(price(j,i),2);
                     counter=counter+1;
@@ -45,7 +50,7 @@ function [output] = Plain_Vanilla(S0,K,r,q,sigma,T,n,nrolls)
         counter=1;
         for j=1:nrolls
             if(exervalue(j)==0)
-                payoff(j,i-1)=payoff(j,i)*exp(-r*T/n);
+                payoff(j,i-1)=payoff(j,i)*exp(-r*dT);
             elseif (Expectholding(counter)<exervalue(j))
                 payoff(j,i-1)=exervalue(j);
                 payoff(j,i:end)=0;
@@ -56,15 +61,7 @@ function [output] = Plain_Vanilla(S0,K,r,q,sigma,T,n,nrolls)
             end
         end
     end
-
-    output=max(K-S0,sum(payoff(:,1))*exp(-r*T/n)/nrolls);
-%     for i=1:nrolls
-%         if(K>price(i,n+1)) 
-%             price(i,n+1)=K-price(i,n+1);
-%         else
-%             price(i,n+1)=0;
-%         end
-%     end
-%     output=exp(-r*T)*mean(price(:,n+1));       
+    pay=payoff;
+    output=max(max(Smax_t-St,sum(payoff(:,1))*exp(-r*dT)/nrolls),0);     
 end
 
