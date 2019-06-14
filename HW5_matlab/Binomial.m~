@@ -60,21 +60,17 @@ function [bino_euro,bino_amer] = Binomial(St,K,r,q,sigma,T_t,M,n,passing_time);
                 Ad = ((i+npass)*tree(j,i).europrice(k,1)+St*power(u,i-j)*power(d,j)) / (i+1+npass);
                 if( abs(Ad-tree(j+1,i+1).europrice(1,1))<1e-5 )
                     Cd1=tree(j+1,i+1).europrice(1,2);
-                    Cd2=tree(j+1,i+1).amerprice(1,2);
+                    Cd2=tree(j+1,i+1).europrice(1,2);
                 elseif( abs(Au-tree(j+1,i+1).europrice(M+1,1))<1e-5 )
                     Cd1=tree(j+1,i+1).europrice(M+1,2);
-                    Cd2=tree(j+1,i+1).amerprice(M+1,2);
                 else
                     Cd1=interp1(tree(j+1,i+1).europrice(:,1), tree(j+1,i+1).europrice(:,2), Ad, 'linear');
-                    Cd2=interp1(tree(j+1,i+1).amerprice(:,1), tree(j+1,i+1).amerprice(:,2), Ad, 'linear');
                 end
                 tree(j,i).europrice(k,2) = ( p*Cu1 + (1-p)*Cd1 ) * exp(-r*dT);
-                tree(j,i).amerprice(k,2) = max( ( p*Cu2 + (1-p)*Cd2 ) * exp(-r*dT) ,...
-                    tree(j,i).amerprice(k,1)-K );
             end
         end
     end
     bino_euro=tree(1,1).europrice(1,2);
-    bino_amer=tree(1,1).amerprice(1,2);
+    bino_amer=0;
 end
 
