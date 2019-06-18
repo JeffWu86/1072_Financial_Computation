@@ -49,9 +49,9 @@ int main(int argc, char* argv[])
     cout<<"\nCRR binomial tree model:\n";
     cout<<"Bisection Method\n";
     cout<<"Euro calls \u03C3: "<<Bisection(S,K,r,q,T,market_price,converge,3,n)<<'\n';
-    cout<<"Euro calls \u03C3: "<<Bisection(S,K,r,q,T,market_price,converge,4,n)<<'\n';
+    cout<<"Euro puts  \u03C3: "<<Bisection(S,K,r,q,T,market_price,converge,4,n)<<'\n';
     cout<<"Amer calls \u03C3: "<<Bisection(S,K,r,q,T,market_price,converge,5,n)<<'\n';
-    cout<<"Amer calls \u03C3: "<<Bisection(S,K,r,q,T,market_price,converge,6,n)<<'\n';
+    cout<<"Amer puts  \u03C3: "<<Bisection(S,K,r,q,T,market_price,converge,6,n)<<'\n';
 
 
     cout<<"Newton's Method\n";

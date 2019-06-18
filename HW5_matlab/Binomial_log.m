@@ -1,5 +1,5 @@
-function [bino_euro,bino_amer] = Binomial(St,K,r,q,sigma,T_t,M,n,passing_time)
-%BINOMIAL Summary of this function goes here
+function [bino_euro,bino_amer] = Binomial_log(St,K,r,q,sigma,T_t,M,n,passing_time)
+%BINOMIAL_LOG Summary of this function goes here
 %   Detailed explanation goes here
     dT=(T_t)/n;
     npass=n*passing_time/T_t;
@@ -19,14 +19,13 @@ function [bino_euro,bino_amer] = Binomial(St,K,r,q,sigma,T_t,M,n,passing_time)
                            power(d,j-1)*u*(1-power(u,i-j))/(1-u) ) / (i+npass);
         end
     end
-
     
     for j=1:n+1
         tree(j,n+1).europrice=nan(M+1,2);
         tree(j,n+1).amerprice=nan(M+1,2);
         for k=1:M+1
-            tree(j,n+1).europrice(k,1) = ( (M-k+1)*tree(j,n+1).Amax+(k-1)*tree(j,n+1).Amin ) / M;
-            tree(j,n+1).europrice(k,2)=max( tree(j,n+1).europrice(k,1) - K , 0 );
+            tree(j,n+1).europrice(k,1) = exp( ( (M-k+1)*tree(j,n+1).Amax+(k-1)*tree(j,n+1).Amin ) / M );
+            tree(j,n+1).europrice(k,2)=max( log(tree(j,n+1).europrice(k,1)) - K , 0 );
             tree(j,n+1).amerprice(k,1)=tree(j,n+1).europrice(k,1);
             tree(j,n+1).amerprice(k,2)=tree(j,n+1).europrice(k,2);
         end
@@ -38,43 +37,45 @@ function [bino_euro,bino_amer] = Binomial(St,K,r,q,sigma,T_t,M,n,passing_time)
             tree(j,i).amerprice=nan(M+1,2);
             for k=1:M+1
                 if(tree(j,i).Amax~=tree(j,i).Amin)
-                    tree(j,i).europrice(k,1) = ( (M-k+1)*tree(j,i).Amax+(k-1)*tree(j,i).Amin ) / M;
-                    tree(j,i).amerprice(k,1) = ( (M-k+1)*tree(j,i).Amax+(k-1)*tree(j,i).Amin ) / M;
+                    tree(j,i).europrice(k,1) = exp( ( (M-k+1)*tree(j,i).Amax+(k-1)*tree(j,i).Amin ) / M );
+                    tree(j,i).amerprice(k,1) = exp( ( (M-k+1)*tree(j,i).Amax+(k-1)*tree(j,i).Amin ) / M );
                 else
-                    tree(j,i).europrice(k,1) = tree(j,i).Amax;
-                    tree(j,i).amerprice(k,1) = tree(j,i).Amax;
+                    tree(j,i).europrice(k,1) = exp( tree(j,i).Amax );
+                    tree(j,i).amerprice(k,1) = exp( tree(j,i).Amax );
                 end
                 
-                Au = ((i+npass)*tree(j,i).europrice(k,1)+St*power(u,i-j+1)*power(d,j-1)) / (i+1+npass);
-                if( abs(Au-tree(j,i+1).europrice(1,1))<1e-5 )
+                Au = ((i+npass)*log(tree(j,i).europrice(k,1))+St*power(u,i-j+1)*power(d,j-1)) / (i+1+npass);
+                if( abs( Au-log( tree(j,i+1).europrice(1,1) ) )<1e-5 )
                     Cu1=tree(j,i+1).europrice(1,2);
                     Cu2=tree(j,i+1).amerprice(1,2);
-                elseif( abs(Au-tree(j,i+1).europrice(M+1,1))<1e-5 )
+                elseif( abs( Au-log( tree(j,i+1).europrice(M+1,1) ) )<1e-5 )
                     Cu1=tree(j,i+1).europrice(M+1,2);
                     Cu2=tree(j,i+1).amerprice(M+1,2);
                 else
-                    Cu1=interp1(tree(j,i+1).europrice(:,1), tree(j,i+1).europrice(:,2), Au, 'linear');
-                    Cu2=interp1(tree(j,i+1).amerprice(:,1), tree(j,i+1).amerprice(:,2), Au, 'linear');
+                    Cu1=interp1(tree(j,i+1).europrice(:,1), tree(j,i+1).europrice(:,2), exp(Au), 'linear');
+                    Cu2=interp1(tree(j,i+1).amerprice(:,1), tree(j,i+1).amerprice(:,2), exp(Au), 'linear');
                 end
                 
-                Ad = ((i+npass)*tree(j,i).europrice(k,1)+St*power(u,i-j)*power(d,j)) / (i+1+npass);
-                if( abs(Ad-tree(j+1,i+1).europrice(1,1))<1e-5 )
+                Ad = ((i+npass)*log( tree(j,i).europrice(k,1) )+St*power(u,i-j)*power(d,j)) / (i+1+npass);
+                if( abs(Ad-log( tree(j+1,i+1).europrice(1,1) ) )<1e-5 )
                     Cd1=tree(j+1,i+1).europrice(1,2);
                     Cd2=tree(j+1,i+1).amerprice(1,2);
-                elseif( abs(Au-tree(j+1,i+1).europrice(M+1,1))<1e-5 )
+                elseif( abs(Ad-log( tree(j+1,i+1).europrice(M+1,1) ) )<1e-5 )
                     Cd1=tree(j+1,i+1).europrice(M+1,2);
                     Cd2=tree(j+1,i+1).amerprice(M+1,2);
                 else
-                    Cd1=interp1(tree(j+1,i+1).europrice(:,1), tree(j+1,i+1).europrice(:,2), Ad, 'linear');
-                    Cd2=interp1(tree(j+1,i+1).amerprice(:,1), tree(j+1,i+1).amerprice(:,2), Ad, 'linear');
+                    Cd1=interp1(tree(j+1,i+1).europrice(:,1), tree(j+1,i+1).europrice(:,2), exp(Ad), 'linear');
+                    Cd2=interp1(tree(j+1,i+1).amerprice(:,1), tree(j+1,i+1).amerprice(:,2), exp(Ad), 'linear');
                 end
                 tree(j,i).europrice(k,2) = ( p*Cu1 + (1-p)*Cd1 ) * exp(-r*dT);
                 tree(j,i).amerprice(k,2) = max( ( p*Cu2 + (1-p)*Cd2 ) * exp(-r*dT) ,...
-                    tree(j,i).amerprice(k,1)-K );
+                    log( tree(j,i).amerprice(k,1) )-K );
             end
         end
     end
     bino_euro=tree(1,1).europrice(1,2);
     bino_amer=tree(1,1).amerprice(1,2);
 end
+
+
 
