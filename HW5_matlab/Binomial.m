@@ -1,4 +1,4 @@
-function [bino_euro,bino_amer] = Binomial(St,K,r,q,sigma,T_t,M,n,passing_time)
+function [bino_euro,bino_amer] = Binomial(St,K,r,q,sigma,T_t,M,n,Save_t,passing_time)
 %BINOMIAL Summary of this function goes here
 %   Detailed explanation goes here
     dT=(T_t)/n;
@@ -13,10 +13,10 @@ function [bino_euro,bino_amer] = Binomial(St,K,r,q,sigma,T_t,M,n,passing_time)
 
     for i=1:n+1
         for j=1:i
-            tree(j,i).Amax=St*( npass + (1-power(u,i-j+1))/(1-u) + ...
-                           power(u,i-j)*d*(1-power(d,j-1))/(1-d) ) / (i+npass);
-            tree(j,i).Amin=St*( npass + (1-power(d,j))/(1-d) + ...
-                           power(d,j-1)*u*(1-power(u,i-j))/(1-u) ) / (i+npass);
+            tree(j,i).Amax=(Save_t*(npass+1) + St*( (1-power(u,i-j+1))/(1-u) + ...
+                           power(u,i-j)*d*(1-power(d,j-1))/(1-d) ) -St ) / (i+npass);
+            tree(j,i).Amin=(Save_t*(npass+1) + St*( (1-power(d,j))/(1-d) + ...
+                           power(d,j-1)*u*(1-power(u,i-j))/(1-u) ) -St ) / (i+npass);
         end
     end
 

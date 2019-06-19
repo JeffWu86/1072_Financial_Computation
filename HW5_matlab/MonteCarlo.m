@@ -17,7 +17,7 @@ function [monte_price] = MonteCarlo(St,K,r,q,sigma,T_t,n,Save_t,passing_time,nro
     
     price(1:nrolls,1)=nan;
     for i=1:nrolls
-        price(i)= max( 0, (sum(sim(i,:))+npass*Save_t)/(npass+n+1) -K );
+        price(i)= max( 0, (sum(sim(i,:))+(npass+1)*Save_t-St)/(npass+n+1) -K );
     end
     
     monte_price=mean(price)*exp(-r*T_t);
