@@ -34,8 +34,8 @@ fprintf('Binomial euro arithmetic average call : %f\n',binolog_euro);
 fprintf('Binomial euro arithmetic average call : %f\n',binolog_amer);
 fprintf('Time %f(s)\n\n',tt);
 
-start=5;
-jump=5;
+start=50;
+jump=50;
 nn=10;
 eurodata=nan(3,nn);
 amerdata=nan(3,nn);

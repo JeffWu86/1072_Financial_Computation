@@ -1,5 +1,5 @@
 
-[S0,K,r,q,sigma,T,Smin,Smax,m,n]=readdata('input_3.txt');
+[S0,K,r,q,sigma,T,Smin,Smax,m,n]=readdata('input_6.txt');
 %Implicit methond
 Im_EC= Implicit(S0,K,r,q,sigma,T,Smin,Smax,m,n,'CALL');
 Im_EP= Implicit(S0,K,r,q,sigma,T,Smin,Smax,m,n,'PUT');
